@@ -1,0 +1,5 @@
+version: 1
+events:
+  hostname: AZURE_VM_DNS
+  port: 9092
+  topic: events

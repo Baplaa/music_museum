@@ -1,0 +1,63 @@
+openapi: 3.0.0
+info:
+  title: Stats API
+  description: This API provides stats
+  contact:
+    email: REDACTED
+  version: 1.0.0
+paths:
+  /stats:
+    get:
+      summary: Gets the event stats
+      operationId: app.get_stats
+      description: Gets Album and Single Songs processsed statistics
+      responses:
+        '200':
+          description: Successfully returned a list of musical events
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/MusicStats'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /health:
+    get:
+      tags:
+        - devices
+      summary: health check
+      operationId: app.health
+      description: checks the health of the service
+      responses:
+        '200':
+          description: "health checked"
+components:
+  schemas:
+    MusicStats:
+      required:
+      - num_album_events
+      - num_single_events
+      - max_album_events
+      - max_single_events
+      properties:
+        num_album_events:
+          type: integer
+          example: 200
+        num_single_events:
+          type: integer
+          example: 200
+        max_album_events:
+          type: integer
+          example: 500
+        max_single_events:
+          type: integer
+          example: 500
+      type: object

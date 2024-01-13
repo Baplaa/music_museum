@@ -1,0 +1,104 @@
+---
+openapi: 3.0.0
+info:
+  title: Music Museum API
+  description: This API receives new albums and new single songs
+  contact:
+    email: REDACTED
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: New Album
+  description: Endpoint for new albums
+- name: New Single Song
+  description: Endpoint for new single songs
+paths:
+  /events/new_album:
+    post:
+      tags:
+      - New Album
+      summary: create a new album
+      description: adds a new album from an artist to the system
+      operationId: app.new_album
+      requestBody:
+        description: New album to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewAlbum'
+      responses:
+        "201":
+          description: new album created
+        "400":
+          description: "invalid input, album invalid"
+  /events/new_single_song:
+    post:
+      tags:
+      - New Single Song
+      summary: create a new single song
+      description: adds a new single song from an artist to the system
+      operationId: app.new_single_song
+      requestBody:
+        description: single song to add
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewSingle'
+      responses:
+        "201":
+          description: item created
+        "400":
+          description: "invalid input, single song invalid"
+  /health:
+    get:
+      tags:
+        - devices
+      summary: health check
+      operationId: app.health
+      description: checks the health of the service
+      responses:
+        '200':
+          description: "health checked"
+components:
+  schemas:
+    NewAlbum:
+      required:
+      - album_id
+      - album_name
+      - album_track_count
+      - artist_name
+      type: object
+      properties:
+        album_id:
+          type: number
+          description: ID of the new album
+        album_name:
+          type: string
+          description: Name of the new album
+        artist_name:
+          type: string
+          description: Name of the artists behind the album
+        album_track_count:
+          type: number
+          description: The amount of tracks there are in the new album
+    NewSingle:
+      required:
+      - artist_name
+      - song_duration
+      - song_id
+      - song_name
+      type: object
+      properties:
+        song_id:
+          type: number
+          description: ID of the song
+        song_name:
+          type: string
+          description: Name of the new single song
+        artist_name:
+          type: string
+          description: Name of the artist or band
+        song_duration:
+          type: number
+          description: The duration of the song as a floating point

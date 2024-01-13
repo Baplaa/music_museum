@@ -1,0 +1,35 @@
+---
+openapi: 3.0.0
+info:
+  title: Music Museum Health API
+  description: This API checks the statuses of the other services
+  contact:
+    email: REDACTED
+  version: 1.0.0
+tags:
+  - name: Health Check
+    description: endpoint for checking the health of the services
+paths:
+  /check:
+    get:
+      tags:
+        - Health Check
+      summary: returns the statuses of the services
+      description: status returns
+      operationId: app.health_check
+      responses:
+        '200':
+          description: Returned status
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  receiver:
+                    type: string
+                  storage:
+                    type: string
+                  processing:
+                    type: string
+                  audit:
+                    type: string

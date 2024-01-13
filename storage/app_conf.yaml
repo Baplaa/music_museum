@@ -1,0 +1,14 @@
+version: 1
+datastore:
+  user: REDACTED
+  password: REDACTED
+  hostname: AZURE_VM_DNS
+  port: 3306
+  db: REDACTED
+events:
+  hostname: AZURE_VM_DNS
+  port: 9092
+  topic: REDACTED
+retries:
+  max_retries: 5
+  retry_time: 10

@@ -1,0 +1,10 @@
+version: 1
+events:
+  receiver: http://AZURE_VM_DNS:8080/health
+  storage: http://AZURE_VM_DNS:8090/health
+  processing: http://AZURE_VM_DNS:8100/health
+  audit: http://AZURE_VM_DNS:8200/health
+datastore:
+  filename: /data/data.json
+scheduler:
+  period_sec: 20

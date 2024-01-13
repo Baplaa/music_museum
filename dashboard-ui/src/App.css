@@ -1,0 +1,95 @@
+.App {
+  text-align: center;
+  display: flex;
+  margin-top: 3vh;
+}
+
+.Processing {
+  width: 30%;
+}
+
+.Audit {
+  width: 70%;
+  text-align: left;
+}
+
+.Endpoints {
+  display: flex;
+  width: 100%;
+}
+
+.Endpoints > div {
+  width: 40%;
+  text-align: left;
+  margin: 0 5%;
+}
+
+.App-logo {
+  pointer-events: none;
+  margin: 5% auto 5%;
+}
+
+.App-header {
+  background-color: white;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+.error {
+  color: red;
+  font-size: 1.3rem;
+  font-weight: 500;
+  margin: 0 10px 0 10px;
+}
+
+.StatsTable{
+  margin-left: auto;
+  margin-right: auto;
+  text-align: left;
+  font-size: 0.9em;
+}
+
+@media only screen and (max-width: 900px) { 
+  .App-logo {
+    width: 150px;
+    height: 150px;
+  }
+
+  .error {
+    margin-top: 0.3em;
+    font-size: 0.8rem;
+  }
+
+  .Processing {
+    margin-top: 0.3em;
+  }
+
+  .Processing h1 {
+    font-size: 25px;
+  }
+
+  .Processing h2 {
+    font-size: 18px;
+  }
+
+  .Audit {
+    margin-top: 0.8em;
+  }
+
+  .Audit h2 {
+    font-size: 18px;
+  }
+
+  .Audit h3 {
+    font-size: 1em;
+  }
+}

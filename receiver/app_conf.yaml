@@ -1,0 +1,12 @@
+version: 1
+eventstore1:
+  url: http://localhost:8090/events/new_album
+eventstore2:
+  url: http://localhost:8090/events/new_single_song
+events:
+  hostname: AZURE_VM_DNS
+  port: 9092
+  topic: REDACTED
+retries:
+  max_retries: 5
+  retry_time: 10

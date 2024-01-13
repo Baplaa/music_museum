@@ -1,0 +1,3 @@
+@Library('tristan_ci_functions@main') _
+
+python_build('storage', 'storagesvc', 8090)

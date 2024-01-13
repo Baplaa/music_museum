@@ -1,0 +1,148 @@
+version: '3.3'
+services:
+  zookeeper:
+    image: wurstmeister/zookeeper
+    ports:
+      - "2181"
+    hostname: zookeeper
+    volumes:
+      - /home/azureuser/zookeeper/data:/opt/zookeeper-3.4.13/data
+  kafka:
+    image: wurstmeister/kafka
+    command: [start-kafka.sh]
+    ports:
+      - "9092:9092"
+    hostname: kafka
+    environment:
+      KAFKA_CREATE_TOPICS: "events:2:1"
+      KAFKA_ADVERTISED_HOST_NAME: AZURE_VM_DNS
+      KAFKA_LISTENERS: INSIDE://:29092,OUTSIDE://:9092
+      KAFKA_INTER_BROKER_LISTENER_NAME: INSIDE
+      KAFKA_ADVERTISED_LISTENERS: INSIDE://kafka:29092,OUTSIDE://AZURE_VM_DNS:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INSIDE:PLAINTEXT,OUTSIDE:PLAINTEXT
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_LOG_DIRS: /kafka/kafka-logs
+      KAFKA_BROKER_ID: 1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /home/azureuser/kafka:/kafka/kafka-logs
+    depends_on:
+      - "zookeeper"
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_DATABASE: REDACTED
+      MYSQL_USER: REDACTED
+      MYSQL_PASSWORD: REDACTED
+      MYSQL_ROOT_PASSWORD: REDACTED
+    ports:
+      - '3306:3306'
+    expose:
+      - '3306'
+    volumes:
+      - my-db:/var/lib/mysql
+  receiver:
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "8080"
+    networks:
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/azureuser/config/receiver:/config
+      - /home/azureuser/logs:/logs
+    depends_on:
+       - "kafka"
+  storage:
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "8090"
+    networks:
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/azureuser/config/storage:/config
+      - /home/azureuser/logs:/logs
+    depends_on:
+       - "kafka"
+       - "db"
+  processing:
+    container_name: processing
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "8100"
+    networks:
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/azureuser/config/processing:/config
+      - /home/azureuser/logs:/logs
+      - processing-db:/data
+    depends_on:
+       - "storage"
+  audit_log:
+    container_name: audit_log
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "8200"
+    networks:
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/azureuser/config/audit_log:/config
+      - /home/azureuser/logs:/logs
+    depends_on:
+       - "kafka"
+  health:
+    container_name: health
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "8120"
+    networks:
+      - "api.network"
+    environment:
+      - TARGET_ENV=test
+    volumes:
+      - /home/azureuser/config/health:/config
+      - /home/azureuser/logs:/logs
+      - health-db:/data
+    depends_on:
+       - "receiver"
+       - "storage"
+       - "processing"
+       - "audit_log"
+  dashboard:
+    container_name: dashboard
+    image: DOCKERHUB_REPO:DOCKERHUB_IMG
+    ports:
+       - "3000"
+    networks:
+      - "api.network"
+    depends_on:
+       - "processing"
+       - "audit_log"
+  nginx:
+    image: nginx:latest
+    volumes:
+      - /home/azureuser/nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - "receiver"
+      - "storage"
+      - "processing"
+      - "audit_log"
+      - "dashboard"
+    ports:
+      - "80:80"
+    networks:
+      - "api.network"
+volumes:
+  my-db:
+  processing-db:
+  health-db:
+networks:
+  api.network:

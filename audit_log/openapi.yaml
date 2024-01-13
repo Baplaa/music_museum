@@ -1,0 +1,138 @@
+openapi: 3.0.0
+info:
+  description: This API provides audit info
+  version: "1.0.0"
+  title: Audit API
+  contact:
+    email: REDACTED
+paths:
+  /album:
+    get:
+      summary: gets an album from history
+      operationId: app.get_album
+      description: Gets albums from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the album at the index in the event store
+          schema:
+            type: integer
+          example: 100
+      responses:
+        '200':
+          description: Successfully returned an album event
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/Album'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /single_song:
+    get:
+      summary: gets single songs from history
+      operationId: app.get_single_song
+      description: Gets single songs from the event store
+      parameters:
+        - name: index
+          in: query
+          description: Gets the single song at the index in the event store
+          schema:
+            type: integer
+          example: 100
+      responses:
+        '200':
+          description: Successfully returned a single song event
+          content:
+            application/json:
+              schema:
+                type: object
+                items:
+                  $ref: '#/components/schemas/SingleSong'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /health:
+    get:
+      tags:
+        - devices
+      summary: health check
+      operationId: app.health
+      description: checks the health of the service
+      responses:
+        '200':
+          description: "health checked"
+components:
+  schemas:
+    Album:
+      required:
+      - album_id
+      - album_name
+      - album_track_count
+      - artist_name
+      type: object
+      properties:
+        album_id:
+          type: number
+          description: ID of the new album
+        album_name:
+          type: string
+          description: Name of the new album
+        artist_name:
+          type: string
+          description: Name of the artists behind the album
+        album_track_count:
+          type: number
+          description: The amount of tracks there are in the new album
+    SingleSong:
+      required:
+      - artist_name
+      - song_duration
+      - song_id
+      - song_name
+      type: object
+      properties:
+        song_id:
+          type: number
+          description: ID of the song
+        song_name:
+          type: string
+          description: Name of the new single song
+        artist_name:
+          type: string
+          description: Name of the artist or band
+        song_duration:
+          type: number
+          description: The duration of the song as a floating point

@@ -1,0 +1,156 @@
+---
+openapi: 3.0.0
+info:
+  title: Music Museum API
+  description: This API receives new albums and new single songs
+  contact:
+    email: REDACTED
+  version: 1.0.0
+servers:
+- url: /
+tags:
+- name: New Album
+  description: Endpoint for new albums
+- name: New Single Song
+  description: Endpoint for new single songs
+paths:
+  /events/new_album:
+    get:
+      tags:
+        - devices
+      summary: gets new album events
+      operationId: app.get_new_album
+      description: gets new album events after a timestamp
+      parameters:
+        - name: timestamp
+          in: query
+          description: limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2000-01-01T01:01:01.001Z
+        - name: end_timestamp
+          in: query
+          description: limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2000-01-01T01:01:01.001Z
+      responses:
+        '200':
+          description: Successfully returned a list of album events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewAlbum'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /events/new_single_song:
+    get:
+      tags:
+        - devices
+      summary: gets new single song events
+      operationId: app.get_new_single_song
+      description: gets new single song events after a timestamp
+      parameters:
+        - name: timestamp
+          in: query
+          description: limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2000-01-01T01:01:01.001Z
+        - name: end_timestamp
+          in: query
+          description: limits the number of items on a page
+          schema:
+            type: string
+            format: date-time
+            example: 2000-01-01T01:01:01.001Z
+      responses:
+        '200':
+          description: Successfully returned a list of single song events
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewSingle'
+        '400':
+          description: Invalid request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+  /health:
+    get:
+      tags:
+        - devices
+      summary: health check
+      operationId: app.health
+      description: checks the health of the service
+      responses:
+        '200':
+          description: "health checked"
+components:
+  schemas:
+    NewAlbum:
+      required:
+      - album_id
+      - album_name
+      - album_track_count
+      - artist_name
+      type: object
+      properties:
+        album_id:
+          type: number
+          description: ID of the new album
+        album_name:
+          type: string
+          description: Name of the new album
+        artist_name:
+          type: string
+          description: Name of the artists behind the album
+        album_track_count:
+          type: number
+          description: The amount of tracks there are in the new album
+        trace_id:
+          type: string
+          format: uuid
+          description: UUID of request
+    NewSingle:
+      required:
+      - artist_name
+      - song_duration
+      - song_id
+      - song_name
+      type: object
+      properties:
+        song_id:
+          type: number
+          description: ID of the song
+        song_name:
+          type: string
+          description: Name of the new single song
+        artist_name:
+          type: string
+          description: Name of the artist or band
+        song_duration:
+          type: number
+          description: The duration of the song as a floating point
+        trace_id:
+          type: string
+          format: uuid
+          description: UUID of request
