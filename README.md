@@ -1,3 +1,5 @@
+![Music Museum](https://github.com/Baplaa/music_museum/blob/main/assets/music_museum.png)
+
 # Music Museum
 
 Music Museum is an ***asynchronous, containerized Microservices-Based Architecture (MSA)*** application developed incrementally over the course of my last 14-week semester at BCIT in the CIT program.
